@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+	<PropertyGroup Label="Directories">
+
+		<IntDir>$(SolutionDir)tmp\obj\$(Platform)\$(Configuraiton)$(MSBuildProjectName)\</IntDir>
+		
+		<OutDir>$(SolutionDir)bin\$(Platform)\$(Configuraiton)$(MSBuildProjectName)\</OutDir>
+		
+	</PropertyGroup>
+	
+</Project>
