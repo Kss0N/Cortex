@@ -22,7 +22,7 @@
 
 
 
-\chapter{Naming Conventions}
+\chapter{Variables and Naming Principles}
 The naming is a fundamental challenge to programming. 
 The following \textit{de facto} industry standard principles are fully endorsed by Cortex:
 \begin{itemize}
@@ -92,8 +92,40 @@ It is strongly adviced against using this type for storage, if a 64-bit integer 
 \footnote[3]{CtxSize strictly refers to the number of bytes that a block of memory occupies. If the number of elements in a sequence is the target, use any of the CtxUint types instead}
 \footnote[4]{IEEE 754 single and double precission float standards}
 
+\subsection{Nul-terminated strings (zStrings)}
+Nul-terminated strings, henceforth refered to as \texttt{zStrings}, (the z- prefix standing for \emph{z}ero), are sequencial constructs of characters (\texttt{CtxChar}) where the final character (the terminant) is the special \texttt{'$\backslash$0'} character which has ASCII code of zero.
+The zStrings encode UTF-8.
+A variable that references a zString has the hard prefix \texttt{z*} instead of \texttt{p*} because of the special rules applying to zStrings.
+
+Cortex deems the stdlib C string.h library archaic and unsafe.
+The system has it's own implementation of the library that pass extra parameters indicating maximal size.
+It also provides support for UTF-8, which stdlib does not.
 
 \chapter{Modularization}
+The fundamental unit of code within Cortex is the routine, as Cortex is sought to be written within a procedural paradigm.
+The routine category can be subdivided into two types:
+\begin{itemize}
+    \item \emph{procedure} is a routine that mutates state. It may or may not bring a return value. 
+    A routine that only updates a global value and nothing else counts as a procedure. 
+    Simultaneously a routine that opens a file also belongs here, as opening a file inherrently mutates global state of the machine.
+    \item \emph{function} is a routine that does not mutate state. A function is allowed to read state, for example global variables or the content of a file, but not mutate it.
+    \item \emph{pure function} is a function that does not even look at state. Instead everything it handles must be parameterized.
+\end{itemize}
+Cortex aims to maximize the amount of functions and pure functions. 
+These modules are inherrently easier to debug and unit test. 
+Cortex does however recognize the pragmatism of procedures. 
+
+When an entire translation unit contains routines of only the functional and pure functional kinds, the translation unit is said to be \emph{logical}.
+The contrast is when a translation unit contains code that mutates state, the module is said to be \emph{stateful}.
+The goal within Cortex is to have 20\% of translation units be stateful and the other 80\% to be logical.
+
+A few rules of thumb to keep in mind in order to reach said goal include:
+\begin{itemize}
+    \item \emph{When in doubt; parameterize.}
+    It is prefered to pass data as parameters rather than the routine reaching out for global state.
+    This inherrently eases issues with coupling that arise with global state.
+    
+\end{itemize}
 
 \section{Debugging}
 
