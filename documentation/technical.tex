@@ -1,0 +1,172 @@
+\documentclass{report}
+\usepackage{graphicx}
+\title{Cortex Engine}
+\author{Kss0N et al.}
+\date{\today}
+
+\begin{document}
+\pagenumbering{roman}
+\maketitle
+\tableofcontents
+\newpage
+
+\section*{Preface}
+
+
+
+
+
+
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+
+
+\chapter{Naming Conventions}
+The naming is a fundamental challenge to programming. 
+The following \textit{de facto} industry standard principles are fully endorsed by Cortex:
+\begin{itemize}
+    \item Descriptive naming
+    \item Consise naming
+    \item Meaningful names
+\end{itemize}
+And outside of these, there are a few extra guidelines in order to make naming impactful.
+The general rule is that these SHOULD be followed, however if for some good reason the established conventions have to be violated, Cortex expects a commented explaination preceeding the varaible declaration.
+If there is a scenario requiring a principle not covered in the guidelines, as soon as problem arises, the guidelines MUST be updated.
+Responsibility is given to the person discovering the uncovered scenario and they also get to define the new rule.
+Cortex does not impose character limits on variable names, but do advice to keep the follwing principle:
+\begin{quote}
+    Long variable names indicate a need to refactor.
+\end{quote}
+The main exception to that rule are naming of unit tests, since they technically constitute variable names in \emph{g-test}.
+The rationale to this exception is that test cases can become extremely precisely defined to where vocabulary gets imprecise if too few words.
+It is nontheless good to try keep test names not longer than they have to be and thus refactoring names to make them shorter is adviced.
+An example of that could be substitute phrase \emph{add to end} with \emph{append}
+
+\section{Casing}
+Type names take \texttt{PascalCase}.
+\begin{verbatim}
+    struct MyStruct {
+        CtxUint32 myValue;
+        CtxChar* zMyString;
+    };
+\end{verbatim}
+Variable names take \texttt{camelCase}.
+Routine names take \texttt{snake\_case}.
+
+\section{prefix and postfix}
+
+\section{Common Types}
+\subsection{Basic Types}
+The following are the basic types used by Cortex.
+\begin{center}
+\begin{tabular}{ c | c | c }
+    Name        &Size (bits)& Unsigned? \\
+    CtxChar\footnote[1]     & 8             & NA        \\ 
+    CtxInt8     & 8         & false     \\  
+    CtxUint8    & 8         & true      \\
+
+    CtxInt16    & 16        & false     \\ 
+    CtxUint16   & 16        & true      \\
+
+    CtxInt32    & 32        & false    \\ 
+    CtxUint32   & 32        & true     \\
+
+    CtxInt64    & 64         & false    \\ 
+    CtxUint64   & 64         & true     \\
+
+    CtxInt\footnote[2] & 64  & false    \\ 
+    CtxUint\footnote[2]& 64  & true     \\
+
+    CtxSize\footnote[3]& 64  & true     \\
+
+    CtxFloat32\footnote[4]& 32 & false \\
+    CtxFloat64\footnote[4]& 64 & false \\
+
+\end{tabular}
+\end{center}
+\footnote[1]{Char represents 8 bit ASCII per se, but used as strings it represent UTF-8}
+\footnote[2]{The convention is usually that the (u)int32 type is assumed. 
+Cortex is developed roughly 20 years past the 32 to 64 bit computing transition and thus assumes all devices will use 64 bit computing.
+It is strongly adviced against using this type for storage, if a 64-bit integer is stored, use the CtxInt64 and CtxUint64 types instead.}
+\footnote[3]{CtxSize strictly refers to the number of bytes that a block of memory occupies. If the number of elements in a sequence is the target, use any of the CtxUint types instead}
+\footnote[4]{IEEE 754 single and double precission float standards}
+
+
+\chapter{Modularization}
+
+\section{Debugging}
+
+\chapter{Memory Management}
+
+\section{Principles}
+Cortex takes extreme precaution in order to not destroy systems via dynamic allocations
+
+\subsection{Pedantry}
+
+\begin{quote}
+    Though shall not make dynamic allocations in vain.
+\end{quote}
+Cortex holds that all forms of dynamic allocated memory cause problems. 
+These problems are side effects that may lead to even larger problems. 
+It is insanely simple to miss a single \textit{free()} at the end of a subsection, which may cause enormous problems later on.
+Thus all heap allocations are taking place with care. 
+The main measurements in Cortex to mitigate these are:
+\begin{itemize}
+    \item Heaps
+    \item Debug Registry
+    \item Allocation Classes
+\end{itemize}
+It should be noted that every single allocation call should be expected to take at least 1000 cycles to complete.
+This is because allocations have to ask the operating system and that process has to pass security checks.
+
+\section{Heaps}
+All allocations have to be associated with a heap. The heap can be limited or unlimited.
+
+
+If \texttt{NULL} is passed as Heap argument on procedure calls, the default heap is allocated upon.
+
+\subsection{Implementation Notes}
+On Windows and XBox systems the \emph{WinAPI} called \emph{HeapAPI} is used. 
+This offers direct operating system support and simplifies logic significantly.
+It offers most of the concepts already. 
+The API imposes a few restrictions, first each allocation must be 16 byte aligned, 
+
+\section{Debug Registry}
+The Debug Registry is a mechanism for registering allocations for debug purposes. 
+It is a layer only activated in the \texttt{debug} configuration.
+This is otherwise ignored because of the inherrent extra performance penalty to the allocation proceduring.
+On exit, the Debug Registry will output a memory dump if there are undeallocated chunks still held onto, implying there to be a memory leak.
+If specified, the Debug Registry also offers the ability to dumb out \emph{all} allocations of a certain class or group of allocation classes, including when they were allocated and when they were freed.
+Allocations are registered using a linked list. Each entry has the following properties:
+\begin{verbatim}
+    DebugRegistry-Entry is record {
+        file-name : zString,
+        line-number : uint,
+        timestamp : uint,
+        action : enum Action,
+        pointer : void pointer,
+        size : uint
+    }
+\end{verbatim}
+The file name property is supplied with the \texttt{\_\_FILE\_\_} macro and the line number property is supplied with the \texttt{\_\_LINE\_\_} macro.
+Timestamp is queried from the computer's system clock.
+The action is dependent on the procedure call and the pointer is the reference variable to the inital address of the allocation block.
+The size is the size of the block \emph{after} the action recorded has been carried out.
+
+
+
+\section{Allocation Class}
+
+
+
+
+
+
+\chapter{Threading}
+
+
+
+
+
+\end{document}
