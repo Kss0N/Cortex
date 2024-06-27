@@ -18,5 +18,16 @@
     <ClInclude Include="ctx_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ctx_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ctx_string.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cortex", "src\Cortex\Cortex.vcxproj", "{198405E3-05FE-4A9B-83A2-387EEC38D7AC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test-Cortex", "test\Test-Cortex\Test-Cortex.vcxproj", "{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -29,6 +31,14 @@ Global
 		{198405E3-05FE-4A9B-83A2-387EEC38D7AC}.Release|x64.Build.0 = Release|x64
 		{198405E3-05FE-4A9B-83A2-387EEC38D7AC}.Release|x86.ActiveCfg = Release|Win32
 		{198405E3-05FE-4A9B-83A2-387EEC38D7AC}.Release|x86.Build.0 = Release|Win32
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Debug|x64.ActiveCfg = Debug|x64
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Debug|x64.Build.0 = Debug|x64
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Debug|x86.ActiveCfg = Debug|Win32
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Debug|x86.Build.0 = Debug|Win32
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Release|x64.ActiveCfg = Release|x64
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Release|x64.Build.0 = Release|x64
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Release|x86.ActiveCfg = Release|Win32
+		{352E8DE7-0F8B-468E-8CE4-E7BBCC9FF38B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

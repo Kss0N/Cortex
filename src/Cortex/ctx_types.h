@@ -9,6 +9,8 @@
 **/
 #pragma once
 #include <stdarg.h>
+#include <sal.h>
+#include <specstrings.h>
 
 #ifdef _MSC_VER
 #if defined(_M_ARM) || defined(_M_X64) || defined(_M_AMD64)
