@@ -3,9 +3,9 @@
 
 	<PropertyGroup Label="Directories">
 
-		<IntDir>$(SolutionDir)tmp\obj\$(Platform)\$(Configuraiton)$(MSBuildProjectName)\</IntDir>
+		<IntDir>$(SolutionDir)tmp\obj\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</IntDir>
 		
-		<OutDir>$(SolutionDir)bin\$(Platform)\$(Configuraiton)$(MSBuildProjectName)\</OutDir>
+		<OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</OutDir>
 		
 	</PropertyGroup>
 	
