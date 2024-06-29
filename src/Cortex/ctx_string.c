@@ -68,3 +68,23 @@ ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr
 
 	return pNext - zStr < maxStr - nextSize ? pNext : zStr;
 }
+
+_Success_(return != ctxUINT_MAX) ctxAPI(CtxUint) 
+ctx_string_length_max(_In_reads_or_z_opt_(maxStr) const CtxChar* zStr, CtxSize maxStr, CtxUint maxCount)
+{
+	if (zStr == ctxNULL)
+		return 0;
+
+	CtxUint count = 0;
+	for (CtxChar* it = isValidUtf8(*zStr) ? zStr : ctx_string_next(zStr, maxStr, zStr);
+		it != NULL && maxCount > 0 && *it != '\0';
+		it = ctx_string_next(zStr, maxStr, it), maxCount--)
+	{
+		if (count > 0 && it == zStr)
+			return ctxUINT_MAX;
+
+		count++;
+	}
+
+	return count;
+}

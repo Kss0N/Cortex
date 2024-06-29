@@ -227,4 +227,73 @@ TEST(Skip, EveryOther)
 
 }
 
+/*
+* Length
+*/
+TEST(Length, Empty)
+{
+	const char zStr[] = "";
+
+	EXPECT_EQ(ctx_string_length(zStr, sizeof zStr), 0);
+}
+
+TEST(Length, Unicode)
+{
+	const char zStr[] = "Hi! åäö ᚠᚢᚦ 😄😂🤣";
+
+	EXPECT_EQ(ctx_string_length(zStr, sizeof zStr), 15);
+}
+
+TEST(Length, InvalidChar)
+{
+	const char zStr[] = { 'H', 'e', 'l', 'l', 'o', 0xFF, 'W', 'o', 'r', 'l', 'd', '\0'};
+
+	EXPECT_EQ(ctx_string_length(zStr, sizeof zStr), 10);
+}
+
+TEST(Length, OutOfBounds)
+{
+	const char zStr[] = "Hello World!";
+	const CtxSize maxSize = sizeof zStr - 1;
+
+	EXPECT_EQ(ctx_string_length(zStr, maxSize), ctxUINT_MAX);
+}
+
+TEST(Length, EmojiOutOfBounds)
+{
+	const char zStr[] = "Hi!😄";
+	const CtxSize maxSize = sizeof zStr - 2;
+
+	EXPECT_EQ(ctx_string_length(zStr, maxSize), ctxUINT_MAX);
+}
+
+TEST(Length, OnlyInvalidChars)
+{
+	const char zStr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, '\0' };
+
+	EXPECT_EQ(ctx_string_length(zStr, sizeof zStr), 0);
+}
+
+TEST(Length, InvalidCharsOutOfBounds)
+{
+	const char zStr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+	EXPECT_EQ(ctx_string_length(zStr, sizeof zStr), ctxUINT_MAX);
+}
+
+TEST(Length, Null)
+{
+	EXPECT_EQ(ctx_string_length(nullptr, 0), 0);
+}
+
+TEST(Length, MaxCount)
+{
+	const char zStr[] = "😄Hello!";
+
+	EXPECT_EQ(ctx_string_length_max(zStr, sizeof zStr, 3), 3);
+}
+
+
+
+
 }
