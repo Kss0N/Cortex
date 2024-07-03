@@ -67,28 +67,15 @@ ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar * zStr, CtxSize maxStr
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
 ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr, _In_opt_z_ const CtxChar * it)
 {
-	if (zStr == ctxNULL || it == ctxNULL) 
+	if (zStr == ctxNULL || it == ctxNULL || *it == '\0')
 		return ctxNULL;
 
-	CtxSize size = getUtf8CharSize(*it);
-	const CtxChar* pNext = size != 0 ? it + size : skipInvalidChars(zStr, maxStr, it);
+	const CtxChar* pNext = skipInvalidChars(zStr, maxStr, it + getUtf8CharSize(*it));
 
 	if (pNext == zStr) 
 		return zStr;
 
-	pNext = skipInvalidChars(zStr, maxStr, pNext);
-
-	ptrdiff_t diff = pNext - zStr;
-
-	if (pNext == zStr)
-		return zStr;
-
-	if (*pNext == '\0')
-		return ctxNULL;
-
-	const CtxChar nextSize = getUtf8CharSize(*pNext);
-
-	return pNext - zStr < maxStr - nextSize ? pNext : zStr;
+	return pNext - zStr <= maxStr - getUtf8CharSize(*pNext) ? pNext : zStr;
 }
 
 _Maybenull_ _Success_(return != zNeedle) ctxAPI(CtxChar*) ctx_string_find(
@@ -98,6 +85,22 @@ _Maybenull_ _Success_(return != zNeedle) ctxAPI(CtxChar*) ctx_string_find(
 	CtxSize                                     maxNeedle)
 {
 
+}
+
+_Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*) 
+ctx_string_skip(
+	_In_reads_or_z_opt_(maxStr) const CtxChar*  zStr,
+	CtxSize                                     maxStr,
+	_In_opt_z_ const CtxChar*					it,
+	CtxInt										count)
+{
+	for (int i = 0; i < count && it != NULL; i++)
+	{
+		it = ctx_string_next(zStr, maxStr, it);
+		if (it == zStr)
+			break;
+	}
+	return (CtxChar*)it;
 }
 
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)

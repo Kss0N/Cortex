@@ -177,7 +177,17 @@ TEST(Next, iteration)
 	ASSERT_EQ(*(int*)it, resolve_endian('🤣'));
 	
 	it = ctx_string_next(zStr, sizeof zStr, it);
+	ASSERT_EQ(*it, '\0');
+
+	it = ctx_string_next(zStr, sizeof zStr, it);
 	ASSERT_EQ(it, nullptr);
+}
+
+TEST(Next, Empty)
+{
+	const char zStr[] = "";
+
+	EXPECT_EQ(ctx_string_next(zStr, sizeof zStr, zStr), nullptr);
 }
 
 TEST(Next, Null)
@@ -225,11 +235,19 @@ TEST(Next, MaxSearchReached)
 	EXPECT_EQ(ctx_string_next(zStr, maxStr, zStr+1), zStr);
 }
 
+TEST(Next, OneInvalid)
+{
+	const char zStr[] = { 0xFF };
+
+	EXPECT_EQ(ctx_string_next(zStr, sizeof zStr, zStr), zStr);
+
+}
+
 TEST(Next, OnlyInvalidCharacters)
 {
 	const char zStr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, '\0' };
 	
-	EXPECT_EQ(ctx_string_next(zStr, sizeof zStr, zStr), nullptr);
+	EXPECT_EQ(*ctx_string_next(zStr, sizeof zStr, zStr), '\0');
 }
 
 TEST(Next, InvalidCharactersOutOfBound)
@@ -245,7 +263,7 @@ TEST(Next, EmojiOutOfBounds)
 	const CtxSize maxStr = sizeof zStr - 2;
 
 	const CtxChar* it = ctx_string_next(zStr, maxStr, zStr);
-	//ASSERT_EQ(*it, 'i');
+	ASSERT_EQ(*it, 'i');
 
 	it = ctx_string_next(zStr, maxStr, it);
 	EXPECT_EQ(it, zStr);
@@ -278,6 +296,12 @@ TEST(Skip, EveryOther)
 	ASSERT_EQ(*it, '!');
 
 }
+
+TEST(Skip, Null)
+{
+	EXPECT_EQ(ctx_string_skip(nullptr, 0, nullptr, 2), nullptr);
+}
+
 
 /*
 * Length
