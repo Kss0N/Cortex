@@ -31,6 +31,12 @@ _Success_(return != 0) ctxAPI(CtxSize) ctx_string_sizeof(_In_reads_or_z_opt_(max
 ctxAPI(CtxInt) ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar* zStr, CtxSize maxStr);
 
 
+inline CtxBool ctx_string_valid(_In_reads_or_z_(maxStr) const CtxChar* zStr, CtxSize maxStr)
+{
+    return ctx_string_validate(zStr, maxStr) < 0;
+}
+
+
 /**
     @brief   Finds next valid character in zStr seen from position of `it`.
     @details When invalid input is encountered, function returns zStr pointer so that an iteration of invalid string without checking validity hangs execution. Likewise, since NULL indicates that iteration reaches it's end, if `it` is NULL, then that should cause the precondition for a potential infinite loop.

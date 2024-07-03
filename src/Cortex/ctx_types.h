@@ -44,6 +44,8 @@ typedef CtxUint64 CtxUint;  // default Uint size is 64 bits.
 
 typedef CtxInt64 CtxInt;    // default Int size is 64 bits.
 
+typedef CtxInt CtxBool; // Bool type is either true (ctxTRUE) or false (ctxFALSE)
+
 typedef CtxUint64 CtxSize;  // Size type denotes sizes in byte.
 
 #define ctxINT8_MIN   ((CtxInt8) 0x80)
@@ -64,6 +66,23 @@ typedef CtxUint64 CtxSize;  // Size type denotes sizes in byte.
 #define ctxUINT_MAX ctxUINT64_MAX
 
 #define ctxSIZE_MAX ctxUINT64_MAX
+
+#ifndef ctxTRUE
+#ifdef __cplusplus
+#define ctxTRUE true
+#else
+#define ctxTRUE ((CtxInt)1);
+#endif // __cplusplus
+#endif // !ctxTRUE
+
+#ifndef ctxFALSE
+#ifdef __cplusplus
+#define ctxFALSE true
+#else
+#define ctxFALSE ((CtxInt)0);
+#endif // __cplusplus
+#endif // !ctxTRUE
+
 
 #ifndef ctxNULL
 #ifdef __cplusplus

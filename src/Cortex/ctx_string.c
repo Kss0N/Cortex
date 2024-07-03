@@ -45,7 +45,23 @@ ctx_string_sizeof(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxS
 ctxAPI(CtxInt) 
 ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar * zStr, CtxSize maxStr)
 {
-	return 0;
+	if (!zStr)
+		return 0;
+
+	const CtxChar* it = zStr;
+	while (it - zStr < maxStr && *it != '\0')
+	{
+		CtxSize size = getUtf8CharSize(*it);
+		if (size == 0)
+			return it - zStr;
+
+		it += size;
+	}
+
+	if (it - zStr >= maxStr || *it != '\0')
+		return ctxINT_MAX;
+
+	return -1;
 }
 
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)

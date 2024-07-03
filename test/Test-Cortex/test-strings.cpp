@@ -75,6 +75,58 @@ TEST(SizeOf, PrematureNul)
 }
 
 /*
+* Validate
+*/
+
+TEST(Validate, Null)
+{
+	EXPECT_EQ(ctx_string_validate(nullptr, 0), 0);
+}
+
+TEST(Validate, EmptyString)
+{
+	EXPECT_TRUE(ctx_string_valid("", sizeof ""));
+}
+
+TEST(Validate, InvalidCharacter)
+{
+	const char zStr[] = { 'H', 'i', 0xFF, '!', '\0' };
+
+	EXPECT_EQ(ctx_string_validate(zStr, sizeof zStr), 2);
+}
+
+TEST(Validate, LackingNulTerminator)
+{
+	const char zStr[] = "Hello World!";
+
+	ASSERT_TRUE(ctx_string_valid(zStr, sizeof zStr));
+
+	EXPECT_EQ(ctx_string_validate(zStr, sizeof zStr - 1), ctxINT_MAX);
+}
+
+TEST(Validate, LastCharInvalid)
+{
+	const char zStr[] = { 'H', 'i', 0xFF };
+
+	EXPECT_EQ(ctx_string_validate(zStr, sizeof zStr), 2);
+}
+
+TEST(Validate, InTheMiddle)
+{
+	const char zStr[] = "😄Hi!";
+
+	EXPECT_EQ(ctx_string_validate(zStr + 1, sizeof zStr - 1), 0);
+}
+
+TEST(Validate, PrematureNul)
+{
+	const char zStr[] = { 'H', 'i', '\0', 0xFF };
+
+	EXPECT_TRUE(ctx_string_valid(zStr, sizeof zStr));
+
+}
+
+/*
 * Next
 */
 
@@ -230,6 +282,7 @@ TEST(Skip, EveryOther)
 /*
 * Length
 */
+
 TEST(Length, Empty)
 {
 	const char zStr[] = "";
@@ -289,6 +342,8 @@ TEST(Length, Null)
 TEST(Length, MaxCount)
 {
 	const char zStr[] = "😄Hello!";
+
+	ASSERT_GT(ctx_string_length(zStr, sizeof zStr), 3);
 
 	EXPECT_EQ(ctx_string_length_max(zStr, sizeof zStr, 3), 3);
 }
