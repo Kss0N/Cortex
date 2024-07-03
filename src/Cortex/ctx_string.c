@@ -42,6 +42,12 @@ ctx_string_sizeof(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxS
 	return maxStr > 0 ? size + 1 : 0;
 }
 
+ctxAPI(CtxInt) 
+ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar * zStr, CtxSize maxStr)
+{
+	return 0;
+}
+
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
 ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr, _In_opt_z_ const CtxChar * it)
 {
@@ -69,6 +75,35 @@ ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr
 	return pNext - zStr < maxStr - nextSize ? pNext : zStr;
 }
 
+_Maybenull_ _Success_(return != zNeedle) ctxAPI(CtxChar*) ctx_string_find(
+	_In_reads_opt_z_(maxStr) const CtxChar * zStr,
+	CtxSize                                     maxStr,
+	_In_reads_opt_z_(maxNeedle) const CtxChar * zNeedle,
+	CtxSize                                     maxNeedle)
+{
+
+}
+
+_Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
+ctx_string_set(
+	_In_reads_opt_z_(maxStr) const CtxChar* zStr,
+	CtxSize                                 maxStr,
+	_In_reads_opt_z_(maxStr) const CtxChar* zSet,
+	CtxSize                                 maxSet)
+{
+	return ctxNULL;
+}
+
+_Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
+ctx_string_complement_set(
+	_In_reads_opt_z_(maxStr) const CtxChar* zStr,
+	CtxSize                                 maxStr,
+	_In_reads_opt_z_(maxStr) const CtxChar* zSet,
+	CtxSize                                 maxSet)
+{
+	return ctxNULL;
+}
+
 _Success_(return != ctxUINT_MAX) ctxAPI(CtxUint) 
 ctx_string_length_max(_In_reads_or_z_opt_(maxStr) const CtxChar* zStr, CtxSize maxStr, CtxUint maxCount)
 {
@@ -87,4 +122,38 @@ ctx_string_length_max(_In_reads_or_z_opt_(maxStr) const CtxChar* zStr, CtxSize m
 	}
 
 	return count;
+}
+
+_Success_(return != ctxUINT_MAX) ctxAPI(CtxUint)
+ctx_string_length_ptr(_In_reads_opt_z_(maxStr) const CtxChar * zStr, CtxSize maxStr, _In_z_ const CtxChar * it)
+{
+	return ctxUINT_MAX;
+}
+
+_Success_(return != ctxNULL) ctxAPI(CtxChar*)
+ctx_string_encode(_Out_writes_z_(maxDst) CtxChar * zDst, CtxSize maxDst, CtxUint unicode)
+{
+	return ctxNULL;
+}
+
+_Success_(return != ctxNULL) ctxAPI(CtxChar*) 
+ctx_string_take(
+	_Out_writes_z_(maxDst) CtxChar * zDst,
+	CtxSize maxDst,
+	_In_reads_or_z_opt_(maxSrc) const CtxChar * zSrc,
+	CtxSize maxSrc,
+	CtxUint count)
+{
+	return ctxNULL;
+}
+
+_Maybenull_ _Success_(return != ctxNULL) ctxAPI(CtxChar*) 
+ctx_string_drop(
+	_Out_writes_z_(maxDst) CtxChar * zDst,
+	CtxSize                                     maxDst,
+	_In_reads_or_z_opt_(maxSrc) const CtxChar * zSrc,
+	CtxSize                                     maxSrc,
+	CtxUint                                     count)
+{
+	return ctxNULL;
 }
