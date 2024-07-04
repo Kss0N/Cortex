@@ -49,18 +49,19 @@ _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*) ctx_string_next(_In_reads
 
 
 /**
-    @brief   Skips over `count` characters from `it`.
+    @brief   Skips over `count` valid characters from `it`.
+    @details This function is based oon the `next()` function. The only fail condition is if it goes out of bounds (not finding nul-terminator within expected range). Therefore if the function runs backwards (`count` < 0), it is not possible for the function to fail and `zStr` as return value is then not considered invalid.
     @param   zStr   Nul-terminated string or NULL
-    @param   maxStr Maximal size of zStr. If this value is reached before finding next character, zStris considered invalid and beginning of zStr is returned.
+    @param   maxStr Maximal size of zStr. If this value is reached before finding next character, `zStr` is considered invalid and beginning of zStr is returned.
     @param   it     Iterator's current position.
     @param   count  Number of valid characters to skip. If negative, iterator goes backwards.
     @returns        Pointer to beginning of next valid Character after skipping `count`. NULL if `it` points to nul-terminator, is NULL or if zStr is NULL. zStr pointer replicated on failure.
 **/
-_Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*) ctx_string_skip(
+_Maybenull_ ctxAPI(CtxChar*) ctx_string_skip(
     _In_reads_or_z_opt_(maxStr) const CtxChar*  zStr, 
     CtxSize                                     maxStr, 
     _In_opt_z_ const CtxChar*                   it,
-    CtxInt                                     count);
+    CtxInt                                      count);
 
 
 /**

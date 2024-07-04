@@ -29,6 +29,32 @@ inline CtxChar* skipInvalidChars(const CtxChar* zStr, CtxSize maxStr, const CtxC
 	return it - zStr >= maxStr ? zStr : it;
 }
 
+inline CtxChar* goBackToPrevChar(const CtxChar* zStr, CtxSize maxStr, const CtxChar* it)
+{
+	if(it != ctxNULL) while (it - zStr > 0)
+	{
+		const CtxChar* prev = it-1;
+
+		if (isValidUtf8(*prev))
+			return prev;
+
+		it--;
+	}
+
+	return ctxNULL;
+}
+
+inline CtxInt maximal(CtxInt a, CtxInt b)
+{
+	return a > b ? a : b;
+}
+
+inline CtxInt absolute(CtxInt x)
+{
+	return maximal(x, -x);
+}
+
+
 
 _Success_(return != 0) ctxAPI(CtxSize) 
 ctx_string_sizeof(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr)
@@ -41,6 +67,7 @@ ctx_string_sizeof(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxS
 		return 0;
 	return maxStr > 0 ? size + 1 : 0;
 }
+
 
 ctxAPI(CtxInt) 
 ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar * zStr, CtxSize maxStr)
@@ -64,6 +91,7 @@ ctx_string_validate(_In_reads_or_z_(maxStr) const CtxChar * zStr, CtxSize maxStr
 	return -1;
 }
 
+
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
 ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr, _In_opt_z_ const CtxChar * it)
 {
@@ -78,30 +106,36 @@ ctx_string_next(_In_reads_or_z_opt_(maxStr) const CtxChar * zStr, CtxSize maxStr
 	return pNext - zStr <= maxStr - getUtf8CharSize(*pNext) ? pNext : zStr;
 }
 
-_Maybenull_ _Success_(return != zNeedle) ctxAPI(CtxChar*) ctx_string_find(
-	_In_reads_opt_z_(maxStr) const CtxChar * zStr,
-	CtxSize                                     maxStr,
-	_In_reads_opt_z_(maxNeedle) const CtxChar * zNeedle,
-	CtxSize                                     maxNeedle)
-{
 
-}
-
-_Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*) 
+_Maybenull_ ctxAPI(CtxChar*) 
 ctx_string_skip(
 	_In_reads_or_z_opt_(maxStr) const CtxChar*  zStr,
 	CtxSize                                     maxStr,
 	_In_opt_z_ const CtxChar*					it,
 	CtxInt										count)
 {
-	for (int i = 0; i < count && it != NULL; i++)
+	for (int i = 0; i < absolute(count) && it != NULL; i++)
 	{
-		it = ctx_string_next(zStr, maxStr, it);
+		it = count > 0 ? 
+			ctx_string_next(zStr, maxStr, it) : 
+			goBackToPrevChar(zStr, maxStr, it);
 		if (it == zStr)
 			break;
 	}
 	return (CtxChar*)it;
 }
+
+
+_Maybenull_ _Success_(return != zNeedle) ctxAPI(CtxChar*)
+ctx_string_find(
+	_In_reads_opt_z_(maxStr) const CtxChar*		zStr,
+	CtxSize                                     maxStr,
+	_In_reads_opt_z_(maxNeedle) const CtxChar*  zNeedle,
+	CtxSize                                     maxNeedle)
+{
+	return ctxNULL;
+}
+
 
 _Maybenull_ _Success_(return != zStr) ctxAPI(CtxChar*)
 ctx_string_set(

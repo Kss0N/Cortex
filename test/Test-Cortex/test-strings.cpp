@@ -302,6 +302,53 @@ TEST(Skip, Null)
 	EXPECT_EQ(ctx_string_skip(nullptr, 0, nullptr, 2), nullptr);
 }
 
+TEST(Skip, Empty)
+{
+	const char zStr[] = "";
+
+	EXPECT_EQ(ctx_string_skip(zStr, sizeof zStr, zStr, 2), nullptr);
+}
+
+TEST(Skip, Everything)
+{
+	const char zStr[] = "Hello World";
+
+	EXPECT_EQ(ctx_string_skip(zStr, sizeof zStr, zStr, 12), nullptr);
+}
+
+TEST(Skip, InvalidCharacters)
+{
+	const char zStr[] = {'H', 0xFF, 0xFF, 0xFF, 'e', 0xFF, 'l', 'l', 'o', '\0'};
+
+	EXPECT_EQ(*ctx_string_skip(zStr, sizeof zStr, zStr, 4), 'o');
+}
+
+TEST(Skip, Backwards)
+{
+	const char zStr[] = "Hi!😄";
+
+	const char* it = zStr + sizeof zStr - 1;
+	ASSERT_EQ(*it, '\0');
+
+	it = ctx_string_skip(zStr, sizeof zStr, it, -1);
+	ASSERT_EQ(*(int*)it, resolve_endian('😄'));
+
+	it = ctx_string_skip(zStr, sizeof zStr, it, -1);
+	ASSERT_EQ(*it, '!');
+
+	it = ctx_string_skip(zStr, sizeof zStr, it, -1);
+	ASSERT_EQ(*it, 'i');
+
+	it = ctx_string_skip(zStr, sizeof zStr, it, -1);
+	ASSERT_EQ(*it, 'H');
+
+	// Keep in mind: it's not an error condition because iteration goes backwards
+	ASSERT_EQ(it, zStr);
+
+	it = ctx_string_skip(zStr, sizeof zStr, it, -1);
+	ASSERT_EQ(it, nullptr);
+}
+
 
 /*
 * Length
